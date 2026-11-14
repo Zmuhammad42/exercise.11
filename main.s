@@ -47,12 +47,16 @@ strlen:
     mv   t1, a0            # pointer to current character
 
 strlen_loop:
-    lbu  t2, 0(t1)
-    
-    addi t0, t0, 1         # increment length
-    addi t1, t1, 1         # advance pointer
-    j    strlen_loop
+    lbu t2, 0(t1)
+    beq t2, zero, strlen_done
 
+    addi t0, t0, 1
+    addi t1, t1, 1
+    j strlen_loop
+
+strlen_done:
+    add a0, t0, zero
+    ret
 
 # -------------------------------------------------
 # Function: to_upper
@@ -69,6 +73,24 @@ strlen_loop:
 # TODO: Implement this function from scratch!
 # -------------------------------------------------
 to_upper:
-    # Your code here
-    
+    mv t0, a0
+
+upper_loop:
+    lbu t1, 0(t0)
+    beq t1, zero, upper_done
+
+    li t2, 97
+    blt t1, t2, upper_next
+
+    li t2, 122
+    blt t2, t1, upper_next
+
+    addi t1, t1, -32
+    sb t1, 0(t0)
+
+upper_next:
+    addi t0, t0, 1
+    j upper_loop
+
+upper_done:
     ret
